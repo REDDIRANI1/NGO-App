@@ -3,3 +3,8 @@ docs/
 AGENTS.md
 commit-as-rrr.sh
 .DS_Store
+frontend/node_modules/
+frontend/.next/
+backend/__pycache__/
+backend/.env
+*.pyc
