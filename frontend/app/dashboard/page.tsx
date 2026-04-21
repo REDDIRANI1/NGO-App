@@ -10,6 +10,8 @@ export default function DashboardPage() {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
   }
   const [month, setMonth] = useState(getDefaultMonth())
+  const [ngoId, setNgoId] = useState('')
+  const [region, setRegion] = useState('')
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -17,7 +19,12 @@ export default function DashboardPage() {
   const fetchDashboard = async () => {
     setLoading(true)
     setError('')
-    const result = await api.get<DashboardData>(`/dashboard?month=${month}`)
+
+    let endpoint = `/dashboard?month=${month}`
+    if (ngoId) endpoint += `&ngo_id=${ngoId}`
+    if (region) endpoint += `&region=${region}`
+
+    const result = await api.get<DashboardData>(endpoint)
     if (result.error) {
       setError(result.error)
     } else if (result.data) {
@@ -34,15 +41,37 @@ export default function DashboardPage() {
     <div style={{ padding: '2rem' }}>
       <h1>Admin Dashboard</h1>
       
-      <div style={{ marginBottom: '2rem' }}>
-        <label style={{ marginRight: '1rem' }}>Select Month:</label>
-        <input
-          type="month"
-          value={month}
-          onChange={(e) => setMonth(e.target.value)}
-          style={{ padding: '0.5rem' }}
-        />
-        <button onClick={fetchDashboard} disabled={loading} style={{ marginLeft: '1rem', padding: '0.5rem 1rem' }}>
+      <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+        <div>
+          <label style={{ marginRight: '1rem' }}>Month:</label>
+          <input
+            type="month"
+            value={month}
+            onChange={(e) => setMonth(e.target.value)}
+            style={{ padding: '0.5rem' }}
+          />
+        </div>
+        <div>
+          <label style={{ marginRight: '1rem' }}>NGO ID:</label>
+          <input
+            type="text"
+            value={ngoId}
+            onChange={(e) => setNgoId(e.target.value)}
+            placeholder="Filter by NGO"
+            style={{ padding: '0.5rem' }}
+          />
+        </div>
+        <div>
+          <label style={{ marginRight: '1rem' }}>Region:</label>
+          <input
+            type="text"
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+            placeholder="Filter by Region"
+            style={{ padding: '0.5rem' }}
+          />
+        </div>
+        <button onClick={fetchDashboard} disabled={loading} style={{ padding: '0.5rem 1rem' }}>
           {loading ? 'Loading...' : 'View'}
         </button>
       </div>

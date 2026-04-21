@@ -8,6 +8,7 @@ export default function SubmitPage() {
   const [form, setForm] = useState<ReportCreate>({
     ngo_id: '',
     month: '',
+    region: '',
     people_helped: 0,
     events_conducted: 0,
     funds_utilized: 0,
@@ -22,7 +23,10 @@ export default function SubmitPage() {
     setError('')
     setMessage('')
 
-    const result = await api.post<{ message: string }>('/report', form)
+    const payload = { ...form }
+    if (!payload.region) delete payload.region
+
+    const result = await api.post<{ message: string }>('/report', payload)
 
     if (result.error) {
       setError(result.error)
@@ -54,6 +58,16 @@ export default function SubmitPage() {
             onChange={(e) => setForm({ ...form, month: e.target.value })}
             placeholder="2026-03"
             required
+            style={{ width: '100%', padding: '0.5rem' }}
+          />
+        </div>
+        <div>
+          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Region (Optional)</label>
+          <input
+            type="text"
+            value={form.region}
+            onChange={(e) => setForm({ ...form, region: e.target.value })}
+            placeholder="Maharashtra"
             style={{ width: '100%', padding: '0.5rem' }}
           />
         </div>

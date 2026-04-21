@@ -25,9 +25,11 @@ async def process_csv(db: AsyncSession, job_id: str, csv_content: str):
 
         for attempt in range(MAX_RETRIES):
             try:
+                region = row.get("region", "").strip() or None
                 report_data = ReportCreate(
                     ngo_id=row["ngo_id"],
                     month=row["month"],
+                    region=region,
                     people_helped=int(row["people_helped"]),
                     events_conducted=int(row["events_conducted"]),
                     funds_utilized=float(row["funds_utilized"]),

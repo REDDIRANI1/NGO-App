@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
@@ -11,6 +12,8 @@ router = APIRouter()
 @router.get("/dashboard", response_model=DashboardResponse)
 async def get_dashboard(
     month: str = Query(..., pattern=r"^\d{4}-(0[1-9]|1[0-2])$"),
+    ngo_id: Optional[str] = Query(None, max_length=100),
+    region: Optional[str] = Query(None, max_length=50),
     db: AsyncSession = Depends(get_db),
 ):
     stmt = select(
@@ -19,6 +22,11 @@ async def get_dashboard(
         func.coalesce(func.sum(Report.events_conducted), 0).label("events"),
         func.coalesce(func.sum(Report.funds_utilized), 0).label("funds"),
     ).where(Report.month == month)
+
+    if ngo_id:
+        stmt = stmt.where(Report.ngo_id == ngo_id)
+    if region:
+        stmt = stmt.where(Report.region == region)
 
     result = await db.execute(stmt)
     row = result.one()

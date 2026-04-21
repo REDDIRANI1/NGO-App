@@ -9,6 +9,7 @@ class Report(Base):
     id = Column(Integer, primary_key=True, index=True)
     ngo_id = Column(String(100), nullable=False, index=True)
     month = Column(String(7), nullable=False, index=True)
+    region = Column(String(50), nullable=True, index=True)
     people_helped = Column(Integer, nullable=False)
     events_conducted = Column(Integer, nullable=False)
     funds_utilized = Column(Numeric(12, 2), nullable=False)

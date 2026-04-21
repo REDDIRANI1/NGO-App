@@ -2,6 +2,7 @@ export interface Report {
   id: number
   ngo_id: string
   month: string
+  region?: string
   people_helped: number
   events_conducted: number
   funds_utilized: number
@@ -12,6 +13,7 @@ export interface Report {
 export interface ReportCreate {
   ngo_id: string
   month: string
+  region?: string
   people_helped: number
   events_conducted: number
   funds_utilized: number

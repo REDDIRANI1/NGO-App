@@ -28,6 +28,7 @@ async def submit_report(report: ReportCreate, db: AsyncSession = Depends(get_db)
             "id": result.id,
             "ngo_id": result.ngo_id,
             "month": result.month,
+            "region": result.region,
             "people_helped": result.people_helped,
             "events_conducted": result.events_conducted,
             "funds_utilized": float(result.funds_utilized),

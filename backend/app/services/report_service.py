@@ -15,6 +15,8 @@ async def upsert_report(db: AsyncSession, report_data: ReportCreate) -> Report:
         existing.people_helped = report_data.people_helped
         existing.events_conducted = report_data.events_conducted
         existing.funds_utilized = report_data.funds_utilized
+        if report_data.region:
+            existing.region = report_data.region
         report = existing
     else:
         report = Report(**report_data.model_dump())
