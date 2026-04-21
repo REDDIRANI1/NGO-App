@@ -1,6 +1,5 @@
 import ThemeRegistry from '@/components/ThemeRegistry'
 import Navbar from '@/components/Navbar'
-import { Container } from '@mui/material'
 
 export const metadata = {
   title: 'NGO Impact Tracker',
@@ -13,9 +12,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <ThemeRegistry>
           <Navbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <main style={{ maxWidth: '1200px', margin: '2rem auto', padding: '0 1rem' }}>
             {children}
-          </Container>
+          </main>
         </ThemeRegistry>
       </body>
     </html>

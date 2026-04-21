@@ -8,7 +8,7 @@ import {
   LinearProgress, List, ListItem, ListItemText, ListItemIcon, Divider
 } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import ErrorIcon from '@mui/icons-material/Error'
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null)
@@ -67,10 +67,10 @@ export default function UploadPage() {
     <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
       <Card elevation={2}>
         <CardContent sx={{ p: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" color="primary">
+          <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }} color="primary">
             Bulk CSV Upload
           </Typography>
-          <Typography variant="body1" color="text.secondary" paragraph>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
             Upload a CSV file containing multiple monthly reports. Processing will happen in the background.
           </Typography>
           <Alert severity="info" sx={{ mb: 4 }}>
@@ -104,7 +104,7 @@ export default function UploadPage() {
               Select CSV File
             </Button>
             {file && (
-              <Typography variant="body2" color="text.primary" fontWeight="medium">
+              <Typography variant="body2" color="text.primary" sx={{ fontWeight: 'medium' }}>
                 Selected: {file.name}
               </Typography>
             )}
@@ -158,13 +158,11 @@ export default function UploadPage() {
                     {jobStatus.errors.map((err, i) => (
                       <ListItem key={i}>
                         <ListItemIcon sx={{ minWidth: 36 }}>
-                          <ErrorOutlineIcon color="error" fontSize="small" />
+                          <ErrorIcon color="error" fontSize="small" />
                         </ListItemIcon>
                         <ListItemText 
-                          primary={`Row ${err.row}`} 
-                          secondary={err.message} 
-                          primaryTypographyProps={{ variant: 'body2', fontWeight: 'bold' }}
-                          secondaryTypographyProps={{ variant: 'caption' }}
+                          primary={<Typography variant="body2" sx={{ fontWeight: 'bold' }}>{`Row ${err.row}`}</Typography>} 
+                          secondary={<Typography variant="caption">{err.message}</Typography>} 
                         />
                       </ListItem>
                     ))}

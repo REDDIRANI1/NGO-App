@@ -47,16 +47,16 @@ export default function DashboardPage() {
 
   return (
     <Box sx={{ mt: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" color="primary">
+      <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }} color="primary">
         Admin Dashboard
       </Typography>
-      <Typography variant="body1" color="text.secondary" paragraph>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
         View aggregated metrics across all NGOs or apply filters to drill down into specific segments.
       </Typography>
 
       <Paper elevation={1} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
-        <Grid container spacing={3} alignItems="flex-end">
-          <Grid item xs={12} sm={6} md={3}>
+        <Grid container spacing={3} sx={{ alignItems: 'flex-end' }}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <TextField
               label="Month (YYYY-MM)"
               type="month"
@@ -64,10 +64,10 @@ export default function DashboardPage() {
               fullWidth
               value={month}
               onChange={(e) => setMonth(e.target.value)}
-              InputLabelProps={{ shrink: true }}
+              slotProps={{ inputLabel: { shrink: true } }}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <TextField
               label="NGO ID (Optional)"
               variant="outlined"
@@ -77,7 +77,7 @@ export default function DashboardPage() {
               placeholder="e.g. NGO-001"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <TextField
               label="Region (Optional)"
               variant="outlined"
@@ -87,7 +87,7 @@ export default function DashboardPage() {
               placeholder="e.g. North"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Button 
               variant="contained" 
               color="primary" 
@@ -107,56 +107,56 @@ export default function DashboardPage() {
 
       {data && (
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card elevation={2}>
               <CardContent sx={{ textAlign: 'center', p: 3 }}>
                 <AssessmentIcon color="primary" sx={{ fontSize: 48, mb: 1, opacity: 0.8 }} />
-                <Typography variant="subtitle2" color="text.secondary" textTransform="uppercase" fontWeight="bold">
+                <Typography variant="subtitle2" color="text.secondary" sx={{ textTransform: 'uppercase', fontWeight: 'bold' }}>
                   NGOs Reporting
                 </Typography>
-                <Typography variant="h3" color="text.primary" fontWeight="bold" sx={{ mt: 1 }}>
+                <Typography variant="h3" color="text.primary" sx={{ mt: 1, fontWeight: 'bold' }}>
                   {data.total_ngos_reporting}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
           
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card elevation={2}>
               <CardContent sx={{ textAlign: 'center', p: 3 }}>
                 <GroupsIcon color="secondary" sx={{ fontSize: 48, mb: 1, opacity: 0.8 }} />
-                <Typography variant="subtitle2" color="text.secondary" textTransform="uppercase" fontWeight="bold">
+                <Typography variant="subtitle2" color="text.secondary" sx={{ textTransform: 'uppercase', fontWeight: 'bold' }}>
                   People Helped
                 </Typography>
-                <Typography variant="h3" color="text.primary" fontWeight="bold" sx={{ mt: 1 }}>
+                <Typography variant="h3" color="text.primary" sx={{ mt: 1, fontWeight: 'bold' }}>
                   {data.total_people_helped.toLocaleString()}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card elevation={2}>
               <CardContent sx={{ textAlign: 'center', p: 3 }}>
                 <EventIcon color="info" sx={{ fontSize: 48, mb: 1, opacity: 0.8 }} />
-                <Typography variant="subtitle2" color="text.secondary" textTransform="uppercase" fontWeight="bold">
+                <Typography variant="subtitle2" color="text.secondary" sx={{ textTransform: 'uppercase', fontWeight: 'bold' }}>
                   Events Conducted
                 </Typography>
-                <Typography variant="h3" color="text.primary" fontWeight="bold" sx={{ mt: 1 }}>
+                <Typography variant="h3" color="text.primary" sx={{ mt: 1, fontWeight: 'bold' }}>
                   {data.total_events_conducted.toLocaleString()}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Card elevation={2}>
               <CardContent sx={{ textAlign: 'center', p: 3 }}>
                 <AccountBalanceWalletIcon color="success" sx={{ fontSize: 48, mb: 1, opacity: 0.8 }} />
-                <Typography variant="subtitle2" color="text.secondary" textTransform="uppercase" fontWeight="bold">
+                <Typography variant="subtitle2" color="text.secondary" sx={{ textTransform: 'uppercase', fontWeight: 'bold' }}>
                   Funds Utilized
                 </Typography>
-                <Typography variant="h3" color="text.primary" fontWeight="bold" sx={{ mt: 1 }}>
+                <Typography variant="h3" color="text.primary" sx={{ mt: 1, fontWeight: 'bold' }}>
                   ${data.total_funds_utilized.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </Typography>
               </CardContent>

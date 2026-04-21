@@ -50,10 +50,10 @@ export default function SubmitPage() {
     <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
       <Card elevation={2}>
         <CardContent sx={{ p: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" color="primary">
+          <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }} color="primary">
             Submit Monthly Report
           </Typography>
-          <Typography variant="body1" color="text.secondary" paragraph>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
             Enter your impact data for the month. Subsequent submissions for the same NGO and month will update the existing record.
           </Typography>
 
@@ -95,7 +95,7 @@ export default function SubmitPage() {
                 variant="outlined"
                 required
                 fullWidth
-                InputProps={{ inputProps: { min: 0 } }}
+                slotProps={{ htmlInput: { min: 0 } }}
                 value={form.people_helped}
                 onChange={(e) => setForm({ ...form, people_helped: parseInt(e.target.value) || 0 })}
               />
@@ -105,7 +105,7 @@ export default function SubmitPage() {
                 variant="outlined"
                 required
                 fullWidth
-                InputProps={{ inputProps: { min: 0 } }}
+                slotProps={{ htmlInput: { min: 0 } }}
                 value={form.events_conducted}
                 onChange={(e) => setForm({ ...form, events_conducted: parseInt(e.target.value) || 0 })}
               />
@@ -117,7 +117,7 @@ export default function SubmitPage() {
               variant="outlined"
               required
               fullWidth
-              InputProps={{ inputProps: { min: 0, step: "0.01" } }}
+              slotProps={{ htmlInput: { min: 0, step: "0.01" } }}
               value={form.funds_utilized}
               onChange={(e) => setForm({ ...form, funds_utilized: parseFloat(e.target.value) || 0 })}
             />
