@@ -1,10 +1,35 @@
+# Project Specific
 .agents/
 docs/
 AGENTS.md
 commit-as-rrr.sh
+
+# OS
 .DS_Store
+*.swp
+
+# Frontend (Next.js)
 frontend/node_modules/
 frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/.eslintcache
+
+# Backend (Python / FastAPI)
 backend/__pycache__/
+backend/.pytest_cache/
+backend/.venv/
+backend/venv/
+backend/env/
 backend/.env
 *.pyc
+*.pyo
+*.pyd
+
+# IDEs
+.vscode/
+.idea/

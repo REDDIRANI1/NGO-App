@@ -46,10 +46,9 @@ This handles transient database issues gracefully.
 
 2. **Data Validation**
    - Validate NGO IDs against a registered NGO table
-   - Add region/state fields for filtering
 
 3. **Performance**
-   - Add database indexes on `month` column
+   - Add database indexes on `month` and `region` columns
    - Redis caching for dashboard queries
    - Pagination for large result sets
 

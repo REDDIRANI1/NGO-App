@@ -40,6 +40,9 @@ export default function UploadPage() {
       const result = await api.get<JobStatus>(`/job-status/${jobId}`)
       if (result.data) {
         setJobStatus(result.data)
+        if (result.data.status === 'completed' || result.data.status === 'failed') {
+          clearInterval(interval)
+        }
       }
     }
 
@@ -54,7 +57,7 @@ export default function UploadPage() {
       <h1>Bulk CSV Upload</h1>
       <p>Upload a CSV file with multiple monthly reports.</p>
       <p style={{ fontSize: '0.875rem', color: '#666', marginBottom: '1rem' }}>
-        CSV format: ngo_id,month,people_helped,events_conducted,funds_utilized
+        CSV format: ngo_id,region,month,people_helped,events_conducted,funds_utilized
       </p>
 
       <div style={{ marginBottom: '1rem' }}>

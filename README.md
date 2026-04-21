@@ -24,7 +24,7 @@ A full-stack web application for NGOs to submit monthly impact reports and for a
 | POST | `/api/report` | Submit a single monthly report |
 | POST | `/api/reports/upload` | Upload CSV file (async processing) |
 | GET | `/api/job-status/{job_id}` | Get job processing status |
-| GET | `/api/dashboard?month=YYYY-MM` | Get aggregated metrics |
+| GET | `/api/dashboard?month=YYYY-MM&ngo_id=...&region=...` | Get aggregated metrics (filters are optional) |
 
 ## Setup Instructions
 
@@ -75,9 +75,9 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 ## CSV Format
 
 ```csv
-ngo_id,month,people_helped,events_conducted,funds_utilized
-NGO-001,2026-03,150,5,25000.00
-NGO-002,2026-03,200,8,40000.00
+ngo_id,region,month,people_helped,events_conducted,funds_utilized
+NGO-001,North,2026-03,150,5,25000.00
+NGO-002,South,2026-03,200,8,40000.00
 ```
 
 ## Testing
