@@ -8,7 +8,17 @@ export default function Navbar() {
     <AppBar position="static" color="primary" elevation={1}>
       <Container maxWidth="lg">
         <Toolbar disableGutters>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+          <Typography 
+            variant="h6" 
+            component={Link} 
+            href="/"
+            sx={{ 
+              flexGrow: 1, 
+              fontWeight: 'bold', 
+              textDecoration: 'none', 
+              color: 'inherit' 
+            }}
+          >
             NGO Impact Tracker
           </Typography>
           <Button color="inherit" component={Link} href="/submit">

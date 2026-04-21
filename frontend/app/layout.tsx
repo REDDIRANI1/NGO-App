@@ -1,5 +1,6 @@
 import ThemeRegistry from '@/components/ThemeRegistry'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 export const metadata = {
   title: 'NGO Impact Tracker',
