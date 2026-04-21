@@ -5,10 +5,11 @@ import { api } from '@/lib/api'
 import { DashboardData } from '@/lib/types'
 
 export default function DashboardPage() {
-  const [month, setMonth] = useState(() => {
+  const getDefaultMonth = () => {
     const now = new Date()
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0'}`
-  })
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+  }
+  const [month, setMonth] = useState(getDefaultMonth())
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
