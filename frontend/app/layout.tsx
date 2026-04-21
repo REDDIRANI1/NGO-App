@@ -16,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main style={{ maxWidth: '1200px', margin: '2rem auto', padding: '0 1rem' }}>
             {children}
           </main>
+          <Footer />
         </ThemeRegistry>
       </body>
     </html>
