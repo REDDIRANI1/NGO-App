@@ -3,6 +3,9 @@
 import { useState } from 'react'
 import { api } from '@/lib/api'
 import { ReportCreate } from '@/lib/types'
+import { 
+  Box, Typography, TextField, Button, Alert, Card, CardContent, CircularProgress 
+} from '@mui/material'
 
 export default function SubmitPage() {
   const [form, setForm] = useState<ReportCreate>({
@@ -32,85 +35,117 @@ export default function SubmitPage() {
       setError(result.error)
     } else if (result.data) {
       setMessage(result.data.message || 'Report submitted successfully')
+      // Reset form but keep NGO ID and Region
+      setForm(prev => ({
+        ...prev,
+        people_helped: 0,
+        events_conducted: 0,
+        funds_utilized: 0,
+      }))
     }
     setLoading(false)
   }
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '500px' }}>
-      <h1>Submit Monthly Report</h1>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>NGO ID</label>
-          <input
-            type="text"
-            value={form.ngo_id}
-            onChange={(e) => setForm({ ...form, ngo_id: e.target.value })}
-            required
-            style={{ width: '100%', padding: '0.5rem' }}
-          />
-        </div>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Month (YYYY-MM)</label>
-          <input
-            type="text"
-            value={form.month}
-            onChange={(e) => setForm({ ...form, month: e.target.value })}
-            placeholder="2026-03"
-            required
-            style={{ width: '100%', padding: '0.5rem' }}
-          />
-        </div>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Region (Optional)</label>
-          <input
-            type="text"
-            value={form.region}
-            onChange={(e) => setForm({ ...form, region: e.target.value })}
-            placeholder="Maharashtra"
-            style={{ width: '100%', padding: '0.5rem' }}
-          />
-        </div>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>People Helped</label>
-          <input
-            type="number"
-            value={form.people_helped}
-            onChange={(e) => setForm({ ...form, people_helped: parseInt(e.target.value) || 0 })}
-            min="0"
-            required
-            style={{ width: '100%', padding: '0.5rem' }}
-          />
-        </div>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Events Conducted</label>
-          <input
-            type="number"
-            value={form.events_conducted}
-            onChange={(e) => setForm({ ...form, events_conducted: parseInt(e.target.value) || 0 })}
-            min="0"
-            required
-            style={{ width: '100%', padding: '0.5rem' }}
-          />
-        </div>
-        <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Funds Utilized</label>
-          <input
-            type="number"
-            value={form.funds_utilized}
-            onChange={(e) => setForm({ ...form, funds_utilized: parseFloat(e.target.value) || 0 })}
-            min="0"
-            step="0.01"
-            required
-            style={{ width: '100%', padding: '0.5rem' }}
-          />
-        </div>
-        <button type="submit" disabled={loading} style={{ padding: '0.75rem', cursor: 'pointer' }}>
-          {loading ? 'Submitting...' : 'Submit Report'}
-        </button>
-      </form>
-      {message && <p style={{ color: 'green', marginTop: '1rem' }}>{message}</p>}
-      {error && <p style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
-    </div>
+    <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
+      <Card elevation={2}>
+        <CardContent sx={{ p: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" color="primary">
+            Submit Monthly Report
+          </Typography>
+          <Typography variant="body1" color="text.secondary" paragraph>
+            Enter your impact data for the month. Subsequent submissions for the same NGO and month will update the existing record.
+          </Typography>
+
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 3 }}>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <TextField
+                label="NGO ID"
+                variant="outlined"
+                required
+                fullWidth
+                value={form.ngo_id}
+                onChange={(e) => setForm({ ...form, ngo_id: e.target.value })}
+                placeholder="e.g. NGO-001"
+              />
+              <TextField
+                label="Region"
+                variant="outlined"
+                fullWidth
+                value={form.region}
+                onChange={(e) => setForm({ ...form, region: e.target.value })}
+                placeholder="e.g. North (Optional)"
+              />
+            </Box>
+
+            <TextField
+              label="Month (YYYY-MM)"
+              variant="outlined"
+              required
+              fullWidth
+              value={form.month}
+              onChange={(e) => setForm({ ...form, month: e.target.value })}
+              placeholder="2026-03"
+            />
+
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <TextField
+                label="People Helped"
+                type="number"
+                variant="outlined"
+                required
+                fullWidth
+                InputProps={{ inputProps: { min: 0 } }}
+                value={form.people_helped}
+                onChange={(e) => setForm({ ...form, people_helped: parseInt(e.target.value) || 0 })}
+              />
+              <TextField
+                label="Events Conducted"
+                type="number"
+                variant="outlined"
+                required
+                fullWidth
+                InputProps={{ inputProps: { min: 0 } }}
+                value={form.events_conducted}
+                onChange={(e) => setForm({ ...form, events_conducted: parseInt(e.target.value) || 0 })}
+              />
+            </Box>
+
+            <TextField
+              label="Funds Utilized"
+              type="number"
+              variant="outlined"
+              required
+              fullWidth
+              InputProps={{ inputProps: { min: 0, step: "0.01" } }}
+              value={form.funds_utilized}
+              onChange={(e) => setForm({ ...form, funds_utilized: parseFloat(e.target.value) || 0 })}
+            />
+
+            <Button 
+              type="submit" 
+              variant="contained" 
+              color="primary" 
+              size="large" 
+              disabled={loading}
+              sx={{ mt: 2, py: 1.5 }}
+            >
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Submit Report'}
+            </Button>
+          </Box>
+
+          {message && (
+            <Alert severity="success" sx={{ mt: 3 }}>
+              {message}
+            </Alert>
+          )}
+          {error && (
+            <Alert severity="error" sx={{ mt: 3 }}>
+              {error}
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
   )
 }

@@ -3,6 +3,14 @@
 import { useState, useEffect } from 'react'
 import { api } from '@/lib/api'
 import { DashboardData } from '@/lib/types'
+import {
+  Box, Typography, TextField, Button, Card, CardContent, CircularProgress, 
+  Grid, Paper, Alert
+} from '@mui/material'
+import AssessmentIcon from '@mui/icons-material/Assessment'
+import GroupsIcon from '@mui/icons-material/Groups'
+import EventIcon from '@mui/icons-material/Event'
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
 
 export default function DashboardPage() {
   const getDefaultMonth = () => {
@@ -38,66 +46,124 @@ export default function DashboardPage() {
   }, [])
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Admin Dashboard</h1>
-      
-      <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-        <div>
-          <label style={{ marginRight: '1rem' }}>Month:</label>
-          <input
-            type="month"
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
-            style={{ padding: '0.5rem' }}
-          />
-        </div>
-        <div>
-          <label style={{ marginRight: '1rem' }}>NGO ID:</label>
-          <input
-            type="text"
-            value={ngoId}
-            onChange={(e) => setNgoId(e.target.value)}
-            placeholder="Filter by NGO"
-            style={{ padding: '0.5rem' }}
-          />
-        </div>
-        <div>
-          <label style={{ marginRight: '1rem' }}>Region:</label>
-          <input
-            type="text"
-            value={region}
-            onChange={(e) => setRegion(e.target.value)}
-            placeholder="Filter by Region"
-            style={{ padding: '0.5rem' }}
-          />
-        </div>
-        <button onClick={fetchDashboard} disabled={loading} style={{ padding: '0.5rem 1rem' }}>
-          {loading ? 'Loading...' : 'View'}
-        </button>
-      </div>
+    <Box sx={{ mt: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" color="primary">
+        Admin Dashboard
+      </Typography>
+      <Typography variant="body1" color="text.secondary" paragraph>
+        View aggregated metrics across all NGOs or apply filters to drill down into specific segments.
+      </Typography>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <Paper elevation={1} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
+        <Grid container spacing={3} alignItems="flex-end">
+          <Grid item xs={12} sm={6} md={3}>
+            <TextField
+              label="Month (YYYY-MM)"
+              type="month"
+              variant="outlined"
+              fullWidth
+              value={month}
+              onChange={(e) => setMonth(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <TextField
+              label="NGO ID (Optional)"
+              variant="outlined"
+              fullWidth
+              value={ngoId}
+              onChange={(e) => setNgoId(e.target.value)}
+              placeholder="e.g. NGO-001"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <TextField
+              label="Region (Optional)"
+              variant="outlined"
+              fullWidth
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+              placeholder="e.g. North"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              fullWidth 
+              size="large"
+              sx={{ height: 56 }}
+              onClick={fetchDashboard}
+              disabled={loading}
+            >
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Apply Filters'}
+            </Button>
+          </Grid>
+        </Grid>
+      </Paper>
+
+      {error && <Alert severity="error" sx={{ mb: 4 }}>{error}</Alert>}
 
       {data && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
-          <div style={{ padding: '1.5rem', border: '1px solid #ccc', borderRadius: '8px' }}>
-            <h3 style={{ margin: 0, color: '#666' }}>Total NGOs Reporting</h3>
-            <p style={{ fontSize: '2rem', margin: '0.5rem 0 0' }}>{data.total_ngos_reporting}</p>
-          </div>
-          <div style={{ padding: '1.5rem', border: '1px solid #ccc', borderRadius: '8px' }}>
-            <h3 style={{ margin: 0, color: '#666' }}>Total People Helped</h3>
-            <p style={{ fontSize: '2rem', margin: '0.5rem 0 0' }}>{data.total_people_helped.toLocaleString()}</p>
-          </div>
-          <div style={{ padding: '1.5rem', border: '1px solid #ccc', borderRadius: '8px' }}>
-            <h3 style={{ margin: 0, color: '#666' }}>Total Events Conducted</h3>
-            <p style={{ fontSize: '2rem', margin: '0.5rem 0 0' }}>{data.total_events_conducted}</p>
-          </div>
-          <div style={{ padding: '1.5rem', border: '1px solid #ccc', borderRadius: '8px' }}>
-            <h3 style={{ margin: 0, color: '#666' }}>Total Funds Utilized</h3>
-            <p style={{ fontSize: '2rem', margin: '0.5rem 0 0' }}>${data.total_funds_utilized.toLocaleString()}</p>
-          </div>
-        </div>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card elevation={2}>
+              <CardContent sx={{ textAlign: 'center', p: 3 }}>
+                <AssessmentIcon color="primary" sx={{ fontSize: 48, mb: 1, opacity: 0.8 }} />
+                <Typography variant="subtitle2" color="text.secondary" textTransform="uppercase" fontWeight="bold">
+                  NGOs Reporting
+                </Typography>
+                <Typography variant="h3" color="text.primary" fontWeight="bold" sx={{ mt: 1 }}>
+                  {data.total_ngos_reporting}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={3}>
+            <Card elevation={2}>
+              <CardContent sx={{ textAlign: 'center', p: 3 }}>
+                <GroupsIcon color="secondary" sx={{ fontSize: 48, mb: 1, opacity: 0.8 }} />
+                <Typography variant="subtitle2" color="text.secondary" textTransform="uppercase" fontWeight="bold">
+                  People Helped
+                </Typography>
+                <Typography variant="h3" color="text.primary" fontWeight="bold" sx={{ mt: 1 }}>
+                  {data.total_people_helped.toLocaleString()}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card elevation={2}>
+              <CardContent sx={{ textAlign: 'center', p: 3 }}>
+                <EventIcon color="info" sx={{ fontSize: 48, mb: 1, opacity: 0.8 }} />
+                <Typography variant="subtitle2" color="text.secondary" textTransform="uppercase" fontWeight="bold">
+                  Events Conducted
+                </Typography>
+                <Typography variant="h3" color="text.primary" fontWeight="bold" sx={{ mt: 1 }}>
+                  {data.total_events_conducted.toLocaleString()}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card elevation={2}>
+              <CardContent sx={{ textAlign: 'center', p: 3 }}>
+                <AccountBalanceWalletIcon color="success" sx={{ fontSize: 48, mb: 1, opacity: 0.8 }} />
+                <Typography variant="subtitle2" color="text.secondary" textTransform="uppercase" fontWeight="bold">
+                  Funds Utilized
+                </Typography>
+                <Typography variant="h3" color="text.primary" fontWeight="bold" sx={{ mt: 1 }}>
+                  ${data.total_funds_utilized.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
       )}
-    </div>
+    </Box>
   )
 }

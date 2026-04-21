@@ -1,8 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { api } from '@/lib/api'
 import { JobStatus } from '@/lib/types'
+import {
+  Box, Typography, Button, Alert, Card, CardContent, CircularProgress, 
+  LinearProgress, List, ListItem, ListItemText, ListItemIcon, Divider
+} from '@mui/material'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null)
@@ -10,6 +16,7 @@ export default function UploadPage() {
   const [jobStatus, setJobStatus] = useState<JobStatus | null>(null)
   const [error, setError] = useState('')
   const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleUpload = async () => {
     if (!file) return
@@ -52,49 +59,122 @@ export default function UploadPage() {
     return () => clearInterval(interval)
   }, [jobId])
 
+  const progress = jobStatus && jobStatus.total > 0 
+    ? Math.round((jobStatus.processed / jobStatus.total) * 100) 
+    : 0
+
   return (
-    <div style={{ padding: '2rem', maxWidth: '500px' }}>
-      <h1>Bulk CSV Upload</h1>
-      <p>Upload a CSV file with multiple monthly reports.</p>
-      <p style={{ fontSize: '0.875rem', color: '#666', marginBottom: '1rem' }}>
-        CSV format: ngo_id,region,month,people_helped,events_conducted,funds_utilized
-      </p>
+    <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
+      <Card elevation={2}>
+        <CardContent sx={{ p: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" color="primary">
+            Bulk CSV Upload
+          </Typography>
+          <Typography variant="body1" color="text.secondary" paragraph>
+            Upload a CSV file containing multiple monthly reports. Processing will happen in the background.
+          </Typography>
+          <Alert severity="info" sx={{ mb: 4 }}>
+            Format: ngo_id, region, month, people_helped, events_conducted, funds_utilized
+          </Alert>
 
-      <div style={{ marginBottom: '1rem' }}>
-        <input
-          type="file"
-          accept=".csv"
-          onChange={(e) => setFile(e.target.files?.[0] || null)}
-        />
-      </div>
+          <Box sx={{ 
+            border: '2px dashed', 
+            borderColor: 'primary.light', 
+            borderRadius: 2, 
+            p: 4, 
+            textAlign: 'center',
+            bgcolor: 'background.default',
+            mb: 3
+          }}>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              style={{ display: 'none' }}
+              ref={fileInputRef}
+            />
+            <Button
+              variant="outlined"
+              color="primary"
+              component="span"
+              startIcon={<CloudUploadIcon />}
+              onClick={() => fileInputRef.current?.click()}
+              sx={{ mb: 2 }}
+            >
+              Select CSV File
+            </Button>
+            {file && (
+              <Typography variant="body2" color="text.primary" fontWeight="medium">
+                Selected: {file.name}
+              </Typography>
+            )}
+          </Box>
 
-      <button onClick={handleUpload} disabled={!file || uploading} style={{ padding: '0.75rem', cursor: 'pointer' }}>
-        {uploading ? 'Uploading...' : 'Upload CSV'}
-      </button>
+          <Button 
+            onClick={handleUpload} 
+            disabled={!file || uploading} 
+            variant="contained"
+            color="primary"
+            fullWidth
+            size="large"
+            sx={{ py: 1.5 }}
+          >
+            {uploading ? <CircularProgress size={24} color="inherit" /> : 'Start Upload'}
+          </Button>
 
-      {error && <p style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
+          {error && <Alert severity="error" sx={{ mt: 3 }}>{error}</Alert>}
 
-      {jobStatus && (
-        <div style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #ccc' }}>
-          <h2>Job Status: {jobStatus.status}</h2>
-          <p>Processed: {jobStatus.processed} / {jobStatus.total}</p>
-          {jobStatus.total > 0 && (
-            <progress value={jobStatus.processed} max={jobStatus.total} style={{ width: '100%' }} />
+          {jobStatus && (
+            <Box sx={{ mt: 4 }}>
+              <Typography variant="h6" gutterBottom>
+                Processing Status: <Box component="span" sx={{ textTransform: 'capitalize', color: jobStatus.status === 'failed' ? 'error.main' : jobStatus.status === 'completed' ? 'success.main' : 'primary.main' }}>{jobStatus.status}</Box>
+              </Typography>
+              
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+                <Box sx={{ width: '100%' }}>
+                  <LinearProgress variant="determinate" value={progress} sx={{ height: 10, borderRadius: 5 }} />
+                </Box>
+                <Box sx={{ minWidth: 35 }}>
+                  <Typography variant="body2" color="text.secondary">{`${progress}%`}</Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Processed: {jobStatus.processed} / {jobStatus.total}
+                </Typography>
+                <Typography variant="body2" color="error.main">
+                  Failed: {jobStatus.failed}
+                </Typography>
+              </Box>
+
+              {jobStatus.errors.length > 0 && (
+                <Box sx={{ mt: 3 }}>
+                  <Divider sx={{ mb: 2 }} />
+                  <Typography variant="subtitle1" color="error.main" gutterBottom>
+                    Errors ({jobStatus.errors.length})
+                  </Typography>
+                  <List dense sx={{ bgcolor: 'error.50', borderRadius: 1 }}>
+                    {jobStatus.errors.map((err, i) => (
+                      <ListItem key={i}>
+                        <ListItemIcon sx={{ minWidth: 36 }}>
+                          <ErrorOutlineIcon color="error" fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText 
+                          primary={`Row ${err.row}`} 
+                          secondary={err.message} 
+                          primaryTypographyProps={{ variant: 'body2', fontWeight: 'bold' }}
+                          secondaryTypographyProps={{ variant: 'caption' }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              )}
+            </Box>
           )}
-          <p>Failed: {jobStatus.failed}</p>
-
-          {jobStatus.errors.length > 0 && (
-            <div style={{ marginTop: '1rem' }}>
-              <h3>Errors:</h3>
-              <ul>
-                {jobStatus.errors.map((err, i) => (
-                  <li key={i}>Row {err.row}: {err.message}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+        </CardContent>
+      </Card>
+    </Box>
   )
 }
