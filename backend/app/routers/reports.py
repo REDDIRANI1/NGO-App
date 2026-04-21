@@ -13,14 +13,28 @@ from app.schemas.report import ReportCreate, ReportResponse
 from app.services.report_service import upsert_report
 from app.services.job_service import create_job
 from app.services.csv_processor import process_csv
+import io
+import csv
 
 router = APIRouter()
 
 
-@router.post("/report", response_model=dict)
+@router.post("/report")
 async def submit_report(report: ReportCreate, db: AsyncSession = Depends(get_db)):
     result = await upsert_report(db, report)
-    return {"message": "Report saved successfully", "report": result}
+    return {
+        "message": "Report saved successfully",
+        "report": {
+            "id": result.id,
+            "ngo_id": result.ngo_id,
+            "month": result.month,
+            "people_helped": result.people_helped,
+            "events_conducted": result.events_conducted,
+            "funds_utilized": float(result.funds_utilized),
+            "created_at": result.created_at.isoformat() if result.created_at else None,
+            "updated_at": result.updated_at.isoformat() if result.updated_at else None,
+        },
+    }
 
 
 @router.post("/reports/upload")
@@ -35,7 +49,7 @@ async def upload_csv(
     content = await file.read()
     text = content.decode("utf-8")
 
-    reader = __import__("csv").reader(io := __import__("io").StringIO(text))
+    reader = csv.reader(io.StringIO(text))
     rows = list(reader)
 
     if len(rows) < 2:
@@ -51,6 +65,3 @@ async def upload_csv(
         "message": "Upload accepted. Processing started.",
         "total_rows": len(rows) - 1,
     }
-
-
-import io
