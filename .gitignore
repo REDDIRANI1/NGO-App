@@ -18,17 +18,23 @@ frontend/.env.development.local
 frontend/.env.test.local
 frontend/.env.production.local
 frontend/.eslintcache
+frontend/.cache-npm/
 
 # Backend (Python / FastAPI)
 backend/__pycache__/
 backend/.pytest_cache/
 backend/.venv/
+backend/.venv311/
 backend/venv/
 backend/env/
 backend/.env
 *.pyc
 *.pyo
 *.pyd
+
+# Local debug artifacts
+openapi.json
+frontend/sample-upload.csv
 
 # IDEs
 .vscode/

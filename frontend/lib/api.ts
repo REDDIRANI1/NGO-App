@@ -1,4 +1,5 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const API_PREFIX = '/api'
 
 interface ApiResponse<T> {
   data?: T
@@ -10,7 +11,11 @@ async function fetchApi<T>(
   options?: RequestInit
 ): Promise<ApiResponse<T>> {
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const normalizedEndpoint = endpoint.startsWith(API_PREFIX)
+      ? endpoint
+      : `${API_PREFIX}${endpoint}`
+
+    const response = await fetch(`${API_BASE_URL}${normalizedEndpoint}`, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
@@ -37,10 +42,15 @@ export const api = {
   get: <T,>(endpoint: string) => fetchApi<T>(endpoint),
 
   postForm: <T,>(endpoint: string, formData: FormData) =>
-    fetch(`${API_BASE_URL}${endpoint}`, {
+    fetch(
+      `${API_BASE_URL}${
+        endpoint.startsWith(API_PREFIX) ? endpoint : `${API_PREFIX}${endpoint}`
+      }`,
+      {
       method: 'POST',
       body: formData,
-    }).then(async (res) => {
+      }
+    ).then(async (res) => {
       const data = await res.json()
       if (!res.ok) {
         return { error: data.detail || 'An error occurred' }
